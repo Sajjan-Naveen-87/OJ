@@ -2,15 +2,17 @@ import React from 'react'
 import GooeyNav from '../GooeyNav/GooeyNav'
 
 const Navbar = () => {
-    const items = [
-        { label: "BubbleCode", href: "#" },
-        { label: "Home", href: "#" },
-        { label: "About", href: "#" },
-        { label: "Contact", href: "#" },
-      ];
+  const items = [
+    { label: "BubbleCode", href: "/" },
+    { label: "Home", href: "/home" },
+    { label: "Practice", href: "/practice" },
+    { label: "About", href: "/about" },
+    { label: "Create Group", href: "/createGroup" },
+    { label: "Join Group", href: "/joinGroup" },
+  ];
   return (
     <>
-        <nav className="w-full px-4 sm:px-6 md:px-8 py-4 fixed top-0 z-20 bg-transparent">
+      <nav className="w-full px-4 sm:px-6 md:px-8 py-4 fixed top-0 z-20 bg-transparent">
         <GooeyNav
           items={items}
           particleCount={15}

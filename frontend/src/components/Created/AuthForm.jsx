@@ -7,6 +7,7 @@ function AuthForm() {
     setIsLogin(!isLogin);
   };
 
+  
   return (
     <div className="bg-black/40 backdrop-blur-md border-white border-2 rounded-lg p-6 sm:p-8 w-[90%] max-w-md text-white transition-all duration-500 ease-in-out">
       <h3 className="font-bold text-xl sm:text-2xl mb-4 text-center">
@@ -14,6 +15,20 @@ function AuthForm() {
       </h3>
 
       <form className="flex flex-col space-y-4">
+        {!isLogin && (
+          <input
+            type="text"
+            placeholder="First Name"
+            className="px-4 py-2 bg-transparent border border-white rounded focus:outline-none focus:ring-2 focus:ring-white"
+          />
+        )}
+        {!isLogin && (
+          <input
+            type="text"
+            placeholder="Last Name"
+            className="px-4 py-2 bg-transparent border border-white rounded focus:outline-none focus:ring-2 focus:ring-white"
+          />
+        )}
         {/* Common Input: Username */}
         <input
           type="text"
