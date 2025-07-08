@@ -7,19 +7,41 @@ function AuthForm() {
     setIsLogin(!isLogin);
   };
 
-  
+  // collecting data from form
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+
+  // functions to update data
+  const handleLogin=(e)=>{
+    e.preventDefault();
+    console.log(username);
+    console.log(password)
+  }
+
+  const handleSignin = (e) =>{
+    e.preventDefault();
+    console.log(firstname);
+    console.log(lastname)
+    console.log(username);
+    console.log(password)
+    console.log(email);
+  }
   return (
     <div className="bg-black/40 backdrop-blur-md border-white border-2 rounded-lg p-6 sm:p-8 w-[90%] max-w-md text-white transition-all duration-500 ease-in-out">
       <h3 className="font-bold text-xl sm:text-2xl mb-4 text-center">
         {isLogin ? "Get Started !!" : "Create Account"}
       </h3>
 
-      <form className="flex flex-col space-y-4">
+      <form onSubmit={isLogin?handleLogin:handleSignin} className="flex flex-col space-y-4">
         {!isLogin && (
           <input
             type="text"
             placeholder="First Name"
             className="px-4 py-2 bg-transparent border border-white rounded focus:outline-none focus:ring-2 focus:ring-white"
+            onChange={(e) => setFirstname(e.target.value)}
           />
         )}
         {!isLogin && (
@@ -27,6 +49,7 @@ function AuthForm() {
             type="text"
             placeholder="Last Name"
             className="px-4 py-2 bg-transparent border border-white rounded focus:outline-none focus:ring-2 focus:ring-white"
+            onChange={(e)=>setLastname(e.target.value)}
           />
         )}
         {/* Common Input: Username */}
@@ -34,6 +57,7 @@ function AuthForm() {
           type="text"
           placeholder="Username"
           className="px-4 py-2 bg-transparent border border-white rounded focus:outline-none focus:ring-2 focus:ring-white"
+           onChange={(e) => setUsername(e.target.value)}
         />
 
         {/* Extra Input for Signin */}
@@ -42,6 +66,7 @@ function AuthForm() {
             type="email"
             placeholder="Email"
             className="px-4 py-2 bg-transparent border border-white rounded focus:outline-none focus:ring-2 focus:ring-white"
+             onChange={(e) => setEmail(e.target.value)}
           />
         )}
 
@@ -50,6 +75,7 @@ function AuthForm() {
           type="password"
           placeholder="Password"
           className="px-4 py-2 bg-transparent border border-white rounded focus:outline-none focus:ring-2 focus:ring-white"
+           onChange={(e) => setPassword(e.target.value)}
         />
 
         {/* Submit */}
