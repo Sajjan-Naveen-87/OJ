@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AuthProvider, { AuthContext } from './AuthProvider';
 
 function AuthForm() {
   const [isLogin, setIsLogin] = useState(true); // true = login, false = register
@@ -20,6 +21,7 @@ function AuthForm() {
     setLoginError('');
     setSuccess(false);
   };
+  const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext)
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -30,6 +32,7 @@ function AuthForm() {
       const response = await axios.post('http://127.0.0.1:8000/api/v1/token/', userdata);
       localStorage.setItem('accessToken', response.data.access);
       localStorage.setItem('refreshToken', response.data.refresh);
+      setIsLoggedIn(true);
       navigate('/dashboard');
       setErrors({});
     } catch (error) {
