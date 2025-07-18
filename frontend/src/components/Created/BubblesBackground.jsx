@@ -10,7 +10,7 @@ const BubblesBackground = () => {
             gravity={0.05}
             friction={0.99}
             wallBounce={1}
-            followCursor={false}
+            followCursor={true}
             colors={[
               0xff3c38, // Red
               0xff8c42, // Orange

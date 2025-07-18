@@ -11,7 +11,7 @@ const Compiler = () => {
     const [problem, setProblem] = useState(null);
     const [verdict, setVerdict] = useState("");
     const [submissions, setSubmissions] = useState([]);
-    const [language, setLanguage] = useState("cpp");
+    const [language, setLanguage] = useState("c");
     const [stats, setStats] = useState({ runtime: "", memory: "" });
     const [htmlDesc, setHtmlDesc] = useState("");
 
@@ -79,20 +79,31 @@ const Compiler = () => {
                         dangerouslySetInnerHTML={{ __html: htmlDesc }}
                     ></div>
 
-                    <h4 className="font-semibold mt-4">Sample Testcases:</h4>
-                    <ul className="list-disc list-inside text-sm">
-                        <li>Input: {problem?.sample_input_1}</li>
-                        <li>Output: {problem?.sample_output_1}</li>
-                        <li>Input: {problem?.sample_input_2}</li>
-                        <li>Output: {problem?.sample_output_2}</li>
-                    </ul>
+                    {/* Verdict and Stats */}
+                    <div className="mt-10">
+                        <h3 className="font-semibold text-green-600">Verdict: {verdict}</h3>
+                        <p className="font-semibold text-green-600 text-sm">Runtime: {stats.runtime} ms</p>
+                        <p className=" font-semibold text-green-600 text-sm">Memory: {stats.memory} KB</p>
+                    </div>
                 </div>
 
                 {/* Monaco Code Editor */}
                 <div>
+                    <label className="font-semibold" id="codinglang">Coding in &nbsp; &nbsp;</label>
+                    <select
+                        className="border p-2 rounded"
+                        id="codinglang"
+                        value={language}
+                        onChange={(e) => setLanguage(e.target.value)}
+                    >
+                        <option value="c">C</option>
+                        <option value="cpp">C++</option>
+                        <option value="python">Python</option>
+                        <option value="java">Java</option>
+                    </select>
                     <label className="block font-semibold mb-2">Code Editor:</label>
                     <Editor
-                        height="300px"
+                        height="600px"
                         language={language}
                         value={code}
                         onChange={(val) => setCode(val || "")}
@@ -100,49 +111,41 @@ const Compiler = () => {
                         options={{
                             fontSize: 14,
                             minimap: { enabled: false },
-                            scrollBeyondLastLine: false,
+                            scrollBeyondLastLine: true,
                         }}
                     />
+                    <div className="mt-4 flex gap-4 items-center">
+                        <button
+                            onClick={handleSubmit}
+                            className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
+                        >
+                            <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+                                Run
+                            </span>
+                        </button>
+                        <button
+                            onClick={handleSubmit}
+                            className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
+                        >
+                            <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+                                Submit
+                            </span>
+                        </button>
+
+                    </div>
+                    {/* Custom Input */}
+                    <div className="mt-6">
+                        <label className="block font-semibold mb-2">Input:</label>
+                        <textarea
+                            rows="2"
+                            className="bg-gray-400 text-black border w-full border rounded p-2"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                        ></textarea>
+                        <h4 className="font-semibold mt-2">Output:</h4>
+                        <pre className="bg-gray-400 p-2 text-black border rounded">{output}</pre>
+                    </div>
                 </div>
-            </div>
-
-            {/* Language Selector and Submit Button */}
-            <div className="mt-4 flex gap-4 items-center">
-                <select
-                    className="border p-2 rounded"
-                    value={language}
-                    onChange={(e) => setLanguage(e.target.value)}
-                >
-                    <option value="cpp">C++</option>
-                    <option value="python">Python</option>
-                    <option value="java">Java</option>
-                </select>
-                <button
-                    onClick={handleSubmit}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                    Run & Submit
-                </button>
-            </div>
-
-            {/* Verdict and Stats */}
-            <div className="mt-6">
-                <h3 className="font-semibold text-green-600">Verdict: {verdict}</h3>
-                <p className="text-sm">Runtime: {stats.runtime} ms</p>
-                <p className="text-sm">Memory: {stats.memory} KB</p>
-                <h4 className="font-semibold mt-2">Output:</h4>
-                <pre className="bg-gray-100 p-2 border rounded whitespace-pre-wrap">{output}</pre>
-            </div>
-
-            {/* Custom Input */}
-            <div className="mt-6">
-                <label className="block font-semibold mb-2">Custom Input:</label>
-                <textarea
-                    rows="6"
-                    className="w-full border rounded p-2"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                ></textarea>
             </div>
 
             {/* Previous Submissions */}

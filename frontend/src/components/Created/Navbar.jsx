@@ -7,7 +7,7 @@ const Navbar = (props) => {
   const items = [
     { label: "BubbleCode", href: "/" },
     { label: "Home", href: "/home" },
-    { label: "Practice", href: "/practice" },
+    { label: "Practice", href: "/problems" },
     { label: "About", href: "/about" },
     { label: "Create Group", href: "/createGroup" },
     { label: "Join Group", href: "/joinGroup" },
@@ -23,7 +23,7 @@ const Navbar = (props) => {
   };
 
   return (
-    <nav className="w-full px-4 sm:px-6 md:px-8 py-4 fixed bg-transparent">
+    <nav className="w-full z-10 px-4 bg-dark sm:px-6 md:px-8 py-4 fixed ">
       <div className="flex items-center justify-between w-full">
         <GooeyNav
           items={items}
