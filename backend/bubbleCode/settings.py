@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     # Created apps
     'api',
     'accounts',
-    'problem_set'
+    'problem_set',
+    'compiler',
 ]
 
 MIDDLEWARE = [

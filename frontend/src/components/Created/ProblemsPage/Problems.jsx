@@ -72,7 +72,7 @@ export default function AnimatedProblemList() {
     };
 
     const handleProblemSelect = (problemId) => {
-        navigate(`/compiler/${problemId}`);
+        navigate(`/problems/${problemId}`);
     };
 
     useEffect(() => {
@@ -87,7 +87,7 @@ export default function AnimatedProblemList() {
                 setSelectedIndex((prev) => Math.max(prev - 1, 0));
             } else if (e.key === "Enter" && selectedIndex >= 0) {
                 e.preventDefault();
-                handleProblemSelect(problems[selectedIndex].problem_id);
+                handleProblemSelect(problems[selectedIndex].id);
             }
         };
         window.addEventListener("keydown", handleKeyDown);
@@ -132,7 +132,7 @@ export default function AnimatedProblemList() {
                         index={index}
                         delay={0.05 * index}
                         onMouseEnter={() => setSelectedIndex(index)}
-                        onClick={() => handleProblemSelect(problem.problem_id)}
+                        onClick={() => handleProblemSelect(problem.id)}
                     >
                         <div
                             className={`p-4 rounded-xl text-white transition-all duration-200 border-l-8 ${getColorByLevel(problem.problem_level)} ${selectedIndex === index ? "ring-2 ring-white" : ""
@@ -147,7 +147,7 @@ export default function AnimatedProblemList() {
                                 dangerouslySetInnerHTML={{ __html: decodeHtml(problem.problem_desc) }}
                             /> */}
                             {/* <button
-                                onClick={() => handleProblemSelect(problem.problem_id)}
+                                onClick={() => handleProblemSelect(problem.id)}
                                 className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white rounded"
                             >
                                 Solve Now

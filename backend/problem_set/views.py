@@ -13,3 +13,9 @@ def problems(request):
     # serializer_class = ProblemSerializer
     serializer = ProblemSerializer(queryset, many=True)
     return JsonResponse(serializer.data, safe=False)
+
+def problems_by_id(request,id):
+    queryset = Problems.objects.get(id=id)
+    # serializer_class = ProblemSerializer
+    serializer = ProblemSerializer(queryset)
+    return JsonResponse(serializer.data)

@@ -7,4 +7,5 @@ from. import views
 
 urlpatterns = [
     path('', views.problems,name="problems"),
+    path('<int:id>', views.problems_by_id,name="problems"),
 ]
