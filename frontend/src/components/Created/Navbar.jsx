@@ -23,7 +23,7 @@ const Navbar = (props) => {
   };
 
   return (
-    <nav className="w-full px-4 sm:px-6 md:px-8 py-4 fixed top-0 z-[9999] bg-transparent">
+    <nav className="w-full px-4 sm:px-6 md:px-8 py-4 fixed bg-transparent">
       <div className="flex items-center justify-between w-full">
         <GooeyNav
           items={items}

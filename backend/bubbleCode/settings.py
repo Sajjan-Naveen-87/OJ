@@ -41,10 +41,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
+    'tinymce',
 
     # Created apps
     'api',
     'accounts',
+    'problem_set'
 ]
 
 MIDDLEWARE = [
