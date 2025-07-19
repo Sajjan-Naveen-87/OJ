@@ -1,109 +1,94 @@
-from django.shortcuts import render
-
-# Create your views here.
-import subprocess, tempfile, time, os, resource, json
+import subprocess
+import tempfile
+import time
+import os
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Compiler
-from .serializers import CompilerSerializer
-from problem_set.models import Problems
+
+LANGUAGE_EXTENSIONS = {
+    'c': 'c',
+    'cpp': 'cpp',
+    'python': 'py',
+    'java': 'java'
+}
+
+COMPILE_COMMANDS = {
+    'c': lambda filename: ['gcc', filename, '-o', 'Main'],
+    'cpp': lambda filename: ['g++', filename, '-o', 'Main'],
+    'java': lambda filename: ['javac', filename],
+    'python': lambda filename: []  # Python does not need compilation
+}
+
+EXECUTE_COMMANDS = {
+    'c': lambda: ['./Main'],
+    'cpp': lambda: ['./Main'],
+    'python': lambda filename: ['python3', filename],
+    'java': lambda: ['java', 'Main']
+}
 
 @api_view(['POST'])
 def compile_code(request):
-    data = request.data
-    code = data.get("code")
-    problem_id = data.get("problem_id")
-    problem = Problems.objects.get(id=problem_id)
-    test_cases = json.loads(problem.test_cases.read())
+    code = request.data.get('code')
+    language = request.data.get('language')
+    custom_input = request.data.get('input_tests', '')
 
-    verdicts = []
-    total_output = []
-    max_runtime = 0
-    max_memory = 0
+    if not code or language not in LANGUAGE_EXTENSIONS:
+        return Response({'error': 'Invalid code or language'}, status=400)
 
-    for test in test_cases:
-        input_data = test["input"]
-        expected_output = test["output"]
-        
-        with tempfile.NamedTemporaryFile(mode='w+', suffix='.py', delete=False) as temp:
-            temp.write(code)
-            temp.flush()
+    file_ext = LANGUAGE_EXTENSIONS[language]
 
-            start_time = time.time()
-            try:
-                def limit_resources():
-                    resource.setrlimit(resource.RLIMIT_CPU, (2, 2))  # CPU time limit
-                    resource.setrlimit(resource.RLIMIT_AS, (256 * 1024 * 1024, 256 * 1024 * 1024))  # Memory 256MB
+    with tempfile.TemporaryDirectory() as temp_dir:
+        filename = f'Main.{file_ext}'
+        file_path = os.path.join(temp_dir, filename)
 
-                result = subprocess.run(
-                    ['python3', temp.name],
-                    input=input_data.encode(),
-                    capture_output=True,
-                    timeout=problem.max_runtime.total_seconds(),
-                    preexec_fn=limit_resources
-                )
+        with open(file_path, 'w') as f:
+            f.write(code)
 
-                end_time = time.time()
-                runtime = round(end_time - start_time, 4)
-                output = result.stdout.decode().strip()
-                error = result.stderr.decode().strip()
-                memory_used = 0  # Placeholder for now, can use external packages to estimate
-                max_runtime = max(max_runtime, runtime)
+        # Compile the code
+        compile_cmd = COMPILE_COMMANDS[language](filename)
+        if compile_cmd:
+            compile_proc = subprocess.run(
+                compile_cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=temp_dir
+            )
+            if compile_proc.returncode != 0:
+                return Response({
+                    'verdict': 'Compilation Error',
+                    'output': compile_proc.stderr.decode()
+                })
 
-                if error:
-                    verdicts.append("Runtime Error")
-                elif output == expected_output.strip():
-                    verdicts.append("Accepted")
-                else:
-                    verdicts.append("Wrong Answer")
+        # Execute the compiled code
+        try:
+            start = time.time()
+            exec_cmd = EXECUTE_COMMANDS[language](file_path) if language == 'python' else EXECUTE_COMMANDS[language]()
+            exec_proc = subprocess.run(
+                exec_cmd,
+                input=custom_input.encode(),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=temp_dir,
+                timeout=5
+            )
+            end = time.time()
+        except subprocess.TimeoutExpired:
+            return Response({'verdict': 'Time Limit Exceeded', 'output': ''})
+        except Exception as e:
+            return Response({'verdict': 'Runtime Error', 'output': str(e)})
 
-                total_output.append(output)
+        runtime = round((end - start) * 1000, 2)
+        memory_usage_kb = exec_proc.__sizeof__() // 1024
 
-            except subprocess.TimeoutExpired:
-                verdicts.append("Time Limit Exceeded")
-                total_output.append("")
+        output = exec_proc.stdout.decode()
+        stderr = exec_proc.stderr.decode()
 
-            os.unlink(temp.name)
-
-    compiler_instance = Compiler.objects.create(
-        problem=problem,
-        code=code,
-        input_tests=json.dumps([t["input"] for t in test_cases]),
-        output=json.dumps(total_output),
-        verdicts=json.dumps(verdicts),
-        runtime=max_runtime,
-        memory_used=max_memory
-    )
-
-    # Update Problem Stats
-    problem.problem_runtime = max_runtime
-    problem.problem_memory = max_memory
-    problem.previous_submissions.append({
-        "verdicts": verdicts,
-        "output": total_output,
-        "runtime": max_runtime
-    })
-    problem.save()
-
-    return Response({
-        "verdicts": verdicts,
-        "output": total_output,
-        "runtime": max_runtime
-    })
-
-@api_view(['GET'])
-def get_problem_with_samples(request, id):
-    try:
-        problem = Problems.objects.get(id=id)
-        with open(problem.test_cases.path) as file:
-            data = json.load(file)
-        sample_cases = data.get('samples', [])[:2]
+        verdict = 'Accepted' if exec_proc.returncode == 0 else 'Runtime Error'
 
         return Response({
-            'id': problem.id,
-            'title': problem.title,
-            'problem_desc': problem.problem_desc,
-            'samples': sample_cases,
+            'output': output or stderr,
+            'verdict': verdict,
+            'runtime': runtime,
+            'memory': memory_usage_kb,
+            'code': code
         })
-    except Problems.DoesNotExist:
-        return Response({'error': 'Problem not found'}, status=404)

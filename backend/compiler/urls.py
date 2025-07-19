@@ -1,7 +1,6 @@
 from django.urls import path
-from .views import compile_code, get_problem_with_samples
+from .views import compile_code 
 
 urlpatterns = [
-    path("compile/", compile_code, name="compile-code"),
-    path('get-problem/<int:id>/', get_problem_with_samples),
+    path("", compile_code, name="compile-code"),
 ]

@@ -46,7 +46,7 @@ const Compiler = () => {
     };
 
     const handleSubmit = () => {
-        axios.post(`/api/compiler/`, {
+        axios.post(`http://127.0.0.1:8000/api/v1/compiler/`, {
             code,
             input_tests: input,
             problem_id: id,
@@ -115,23 +115,7 @@ const Compiler = () => {
                         }}
                     />
                     <div className="mt-4 flex gap-4 items-center">
-                        <button
-                            onClick={handleSubmit}
-                            className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
-                        >
-                            <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
-                                Run
-                            </span>
-                        </button>
-                        <button
-                            onClick={handleSubmit}
-                            className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
-                        >
-                            <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
-                                Submit
-                            </span>
-                        </button>
-
+                        
                     </div>
                     {/* Custom Input */}
                     <div className="mt-6">
@@ -142,22 +126,41 @@ const Compiler = () => {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                         ></textarea>
+                        <button
+                            onClick={handleSubmit}
+                            className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
+                        >
+                            <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+                                Run
+                            </span>
+                        </button>
+                        &nbsp;&nbsp;&nbsp;
+                        <button
+                            onClick={handleSubmit}
+                            className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
+                        >
+                            <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+                                Submit
+                            </span>
+                        </button>
+
                         <h4 className="font-semibold mt-2">Output:</h4>
-                        <pre className="bg-gray-400 p-2 text-black border rounded">{output}</pre>
+                        <p className="bg-gray-400 p-2 text-black border rounded">{output}</p>
                     </div>
                 </div>
             </div>
 
             {/* Previous Submissions */}
             <div className="mt-8">
-                <h3 className="text-lg font-bold mb-2">Previous Submissions</h3>
+                <h3 className="bg-gray-400 text-black border w-full border rounded p-2">Previous Submissions</h3>
                 <ul className="space-y-2">
                     {submissions.map((sub, idx) => (
                         <li key={idx} className="border p-2 rounded bg-white shadow text-sm">
-                            <div className="font-semibold text-blue-800">
+                            <p className="font-semibold">abcd{id}</p>
+                            <div className="bg-gray-400 text-black border w-full border rounded p-2">
                                 Verdict: {sub.verdict}, Runtime: {sub.runtime} ms, Memory: {sub.memory} KB
                             </div>
-                            <pre className="bg-gray-50 p-2 mt-1 overflow-auto max-h-40 whitespace-pre-wrap">
+                            <pre className="bg-gray-400 text-black border w-full border rounded p-2">
                                 {sub.code}
                             </pre>
                         </li>
