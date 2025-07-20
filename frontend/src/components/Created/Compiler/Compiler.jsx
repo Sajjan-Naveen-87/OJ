@@ -46,6 +46,25 @@ const Compiler = () => {
     };
 
     const handleSubmit = () => {
+        axios.post(`http://127.0.0.1:8000/api/v1/compiler/submit/`, {
+            code,
+            input_tests: input,
+            problem_id: id,
+            language,
+        }).then((res) => {
+            setOutput(res.data.output);
+            setVerdict(res.data.verdict);
+            setStats({
+                runtime: res.data.runtime,
+                memory: res.data.memory,
+            });
+            setSubmissions((prev) => [res.data, ...prev]);
+        }).catch((err) => {
+            console.error("Submission error:", err);
+        });
+    };
+
+    const handleRun = () => {
         axios.post(`http://127.0.0.1:8000/api/v1/compiler/`, {
             code,
             input_tests: input,
@@ -115,7 +134,7 @@ const Compiler = () => {
                         }}
                     />
                     <div className="mt-4 flex gap-4 items-center">
-                        
+
                     </div>
                     {/* Custom Input */}
                     <div className="mt-6">
@@ -127,7 +146,7 @@ const Compiler = () => {
                             onChange={(e) => setInput(e.target.value)}
                         ></textarea>
                         <button
-                            onClick={handleSubmit}
+                            onClick={handleRun}
                             className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
                         >
                             <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
