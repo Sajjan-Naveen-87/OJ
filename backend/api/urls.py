@@ -9,4 +9,5 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('problems/',include('problem_set.urls')),
     path('compiler/',include('compiler.urls')),
+    path('accounts/', include('accounts.urls')),
 ]

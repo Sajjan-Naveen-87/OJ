@@ -8,9 +8,15 @@ import AuthProvider from './components/Created/AuthProvider';
 import Person from './components/Created/PersonalPage/Person';
 import Problems from './components/Created/ProblemsPage/Problems';
 import Compiler from './components/Created/Compiler/Compiler';
+import Profile from './components/Created/Profile/Profile';
+import { useParams } from 'react-router-dom';
 
 function App() {
   const [activeIdx, setActiveIdx] = useState(0);
+  const ProfileWrapper = () => {
+    const { username } = useParams();
+    return <Profile username={username} />;
+  };
 
   return (
     <>
@@ -26,7 +32,8 @@ function App() {
                 <Route path="/dashboard" element={<h1 className="text-center text-3xl mt-8">Dashboard Page</h1>} />
                 <Route path="/person" element={<Person />} />
                 <Route path="/problems" element={<Problems />} />
-                <Route path="/problems/:id" element={<Compiler/>} />
+                <Route path="/problems/:id" element={<Compiler />} />
+                <Route path="/profile/:username" element={<ProfileWrapper />} />
               </Routes>
             </main>
             <Footer />

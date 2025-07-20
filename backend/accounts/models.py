@@ -1,3 +1,49 @@
 from django.db import models
+from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
-# Create your models here.
+alpha_validator = RegexValidator(r'^[a-zA-Z]+$', 'Only alphabetic characters are allowed.')
+
+class Person(models.Model):
+    GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='person_profile')
+    
+    first_name = models.CharField(max_length=50, validators=[alpha_validator])
+    last_name = models.CharField(max_length=50, validators=[alpha_validator])
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+    date_of_joining = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+
+    score = models.FloatField(default=0.0)
+    rank = models.IntegerField(unique=True, blank=True, null=True)
+    problems_attempted = models.IntegerField(default=0)
+    problems_solved = models.IntegerField(default=0)
+
+    about = models.TextField(blank=True)
+    profession = models.CharField(max_length=100)
+    public_account = models.BooleanField(default=False)
+    groups_joined = models.CharField(max_length=255, blank=True)
+
+    def clean(self):
+        if self.image and self.image.size > 1024 * 1024:
+            raise ValidationError("Image size should not exceed 1MB.")
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            last_rank = Person.objects.aggregate(models.Max('rank'))['rank__max'] or 0
+            self.rank = last_rank + 1
+        super().save(*args, **kwargs)
+        self.update_ranks()
+
+    @classmethod
+    def update_ranks(cls):
+        people = cls.objects.order_by('-score', 'date_of_joining')
+        for index, person in enumerate(people, start=1):
+            if person.rank != index:
+                person.rank = index
+                person.save(update_fields=['rank'])
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.user.username})"
