@@ -1,12 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import FuzzyText from '../../FuzzyText/FuzzyText';
 
 const EditProfile = () => {
     const { username } = useParams();
     const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const [token, setToken] = useState(""); // If using JWT
+    const LoginUsername = localStorage.getItem('username');
+    if (LoginUsername != username) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <FuzzyText
+                    baseIntensity={0.2}
+                    hoverIntensity={0.5}
+                    enableHover={true}
+                >
+                    404 Invalid Access
+                </FuzzyText>
+            </div>
+        );
+    }
     useEffect(() => {
         const storedToken = localStorage.getItem("accessToken"); // ✅ Fixed token key
         if (storedToken) setToken(storedToken);
@@ -22,7 +37,7 @@ const EditProfile = () => {
     });
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/v1/accounts/profile/${username}/`)
+        axios.get(`http://127.0.0.1:8000/api/v1/accounts/profile/${LoginUsername}/`)
             .then(res => {
                 setProfile(res.data);
                 setFormData({
