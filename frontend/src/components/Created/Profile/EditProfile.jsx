@@ -7,6 +7,10 @@ const EditProfile = () => {
     const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const [token, setToken] = useState(""); // If using JWT
+    useEffect(() => {
+        const storedToken = localStorage.getItem("accessToken"); // ✅ Fixed token key
+        if (storedToken) setToken(storedToken);
+    }, []);
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -75,7 +79,7 @@ const EditProfile = () => {
                 {
                     headers: {
                         "Content-Type": "multipart/form-data",
-                        Authorization: `Bearer ${token}` // If not using JWT, remove this
+                        ...(token && { Authorization: `Bearer ${token}` }),
                     },
                 }
             );
@@ -118,10 +122,11 @@ const EditProfile = () => {
             </label>
 
             <div className="my-4">
-                <label htmlFor="image">Upload New Profile Picture</label>
+                <label htmlFor="updateImage">Upload New Profile Picture</label>
                 <input
                     type="file"
                     name="image"
+                    id="updateImage"
                     accept="image/png, image/jpeg, image/jpg, image/webp"
                     onChange={handleFileChange}
                     className="block mt-2"
