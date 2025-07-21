@@ -2,13 +2,27 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import defaultProfileImage from '../../../assets/ProfileImage/general-profile-image.png';
 import { useNavigate } from 'react-router-dom';
+import FuzzyText from '../../FuzzyText/FuzzyText';
 
 const Profile = ({ username }) => {
     const [profile, setProfile] = useState(null);
     const navigate = useNavigate();
-
+    const LoginUsername = localStorage.getItem('username');
+    if (LoginUsername != username) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <FuzzyText
+                    baseIntensity={0.2}
+                    hoverIntensity={0.5}
+                    enableHover={true}
+                >
+                    404 Invalid Access
+                </FuzzyText>
+            </div>
+        );
+    }
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/v1/accounts/profile/${username}/`)
+        axios.get(`http://127.0.0.1:8000/api/v1/accounts/profile/${LoginUsername}/`)
             .then(res => setProfile(res.data))
             .catch(err => console.error('Error fetching profile:', err));
     }, [username]);

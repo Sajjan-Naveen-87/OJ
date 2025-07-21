@@ -1,7 +1,9 @@
-import React, { useContext } from 'react'
-import GooeyNav from '../GooeyNav/GooeyNav'
+import React, { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
+import GooeyNav from '../GooeyNav/GooeyNav';
 import { AuthContext } from './AuthProvider';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import defaultProfileImage from '../../assets/ProfileImage/general-profile-image.png';
 
 const Navbar = (props) => {
   const items = [
@@ -15,6 +17,20 @@ const Navbar = (props) => {
 
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
+  const username = localStorage.getItem('username');
+  const [profileImage, setProfileImage] = useState(defaultProfileImage);
+
+  useEffect(() => {
+    if (isLoggedIn && username) {
+      axios.get(`http://127.0.0.1:8000/api/v1/accounts/profile/${username}/`)
+        .then(res => {
+          if (res.data.image) {
+            setProfileImage(`http://127.0.0.1:8000${res.data.image}`);
+          }
+        })
+        .catch(err => console.error('Error fetching profile image:', err));
+    }
+  }, [isLoggedIn, username]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -35,16 +51,20 @@ const Navbar = (props) => {
           timeVariance={300}
           colors={[1, 2, 3, 1, 2, 3, 1, 4]}
         />
-        {/* {console.log('Logged In:',isLoggedIn)} */}
         {isLoggedIn && (
-          <button
-            onClick={handleLogout}
-            className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
-          >
-            <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
-              Logout
-            </span>
-          </button>
+          <>
+            <Link to={`/profile/${username}`}>
+              <img className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" src={profileImage} alt="Profile" />
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
+            >
+              <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+                Logout
+              </span>
+            </button>
+          </>
         )}
       </div>
     </nav>

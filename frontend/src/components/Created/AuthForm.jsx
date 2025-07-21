@@ -32,6 +32,7 @@ function AuthForm() {
       const response = await axios.post('http://127.0.0.1:8000/api/v1/token/', userdata);
       localStorage.setItem('accessToken', response.data.access);
       localStorage.setItem('refreshToken', response.data.refresh);
+      localStorage.setItem('username', username);
       setIsLoggedIn(true);
       navigate('/dashboard');
       setErrors({});
