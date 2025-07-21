@@ -10,4 +10,6 @@ urlpatterns = [
     path('problems/',include('problem_set.urls')),
     path('compiler/',include('compiler.urls')),
     path('accounts/', include('accounts.urls')),
+    path('leaderboard/', include('leaderboard.urls')),
+
 ]

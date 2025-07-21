@@ -3,6 +3,7 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 import os
+from leaderboard.models import LeaderboardEntry  # adjust path as needed
 
 alpha_validator = RegexValidator(r'^[a-zA-Z]+$', 'Only alphabetic characters are allowed.')
 
@@ -53,6 +54,12 @@ class Person(models.Model):
         super().save(*args, **kwargs)
         self.update_ranks()
 
+        # Sync with LeaderboardEntry
+        LeaderboardEntry.objects.update_or_create(
+            user=self.user,
+            defaults={'score': self.score}
+        )
+
     @classmethod
     def update_ranks(cls):
         people = cls.objects.order_by('-score', 'date_of_joining')
@@ -60,6 +67,13 @@ class Person(models.Model):
             if person.rank != index:
                 person.rank = index
                 person.save(update_fields=['rank'])
+                LeaderboardEntry.objects.update_or_create(
+                    user=person.user,
+                    defaults={'score': person.score}
+                )
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.user.username})"
+
+# Add Meta class to LeaderboardEntry for ordering
+LeaderboardEntry._meta.ordering = ['-score', 'user__person_profile__date_of_joining']

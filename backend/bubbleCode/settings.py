@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'accounts',
     'problem_set',
     'compiler',
+    'leaderboard',
 ]
 
 MIDDLEWARE = [

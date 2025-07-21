@@ -7,10 +7,10 @@ import defaultProfileImage from '../../assets/ProfileImage/general-profile-image
 
 const Navbar = (props) => {
   const items = [
-    { label: "BubbleCode", href: "/" },
+    { label: "BubbleCode", href: "/problems" },
     { label: "Home", href: "/home" },
     { label: "Practice", href: "/problems" },
-    { label: "About", href: "/about" },
+    { label: "Leaderboard", href: "/leaderboard" },
     { label: "Create Group", href: "/createGroup" },
     { label: "Join Group", href: "/joinGroup" },
   ];
@@ -52,9 +52,9 @@ const Navbar = (props) => {
           colors={[1, 2, 3, 1, 2, 3, 1, 4]}
         />
         {isLoggedIn && (
-          <>
+          <div className="flex items-center gap-4">
             <Link to={`/profile/${username}`}>
-              <img className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-300 dark:ring-gray-500" src={profileImage} alt="Profile" />
+              <img className="w-10 h-10 p-1 rounded-full ring-2 ring-gray-100 dark:ring-gray-200" src={profileImage || defaultProfileImage} alt='Profile' />
             </Link>
             <button
               onClick={handleLogout}
@@ -64,7 +64,7 @@ const Navbar = (props) => {
                 Logout
               </span>
             </button>
-          </>
+          </div>
         )}
       </div>
     </nav>
