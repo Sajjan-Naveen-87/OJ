@@ -2,8 +2,15 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+import os
 
 alpha_validator = RegexValidator(r'^[a-zA-Z]+$', 'Only alphabetic characters are allowed.')
+
+def validate_image_extension(image):
+    ext = os.path.splitext(image.name)[1].lower()
+    valid_extensions = ['.jpg', '.jpeg', '.png', '.gif']
+    if ext not in valid_extensions:
+        raise ValidationError(f'Unsupported file extension: {ext}. Allowed: jpg, jpeg, png, gif.')
 
 class Person(models.Model):
     GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]
@@ -14,7 +21,13 @@ class Person(models.Model):
     last_name = models.CharField(max_length=50, validators=[alpha_validator])
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     date_of_joining = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+
+    image = models.ImageField(
+        upload_to="profile_images/",
+        blank=True,
+        null=True,
+        validators=[validate_image_extension]
+    )
 
     score = models.FloatField(default=0.0)
     rank = models.IntegerField(unique=True, blank=True, null=True)
@@ -27,10 +40,13 @@ class Person(models.Model):
     groups_joined = models.CharField(max_length=255, blank=True)
 
     def clean(self):
-        if self.image and self.image.size > 1024 * 1024:
-            raise ValidationError("Image size should not exceed 1MB.")
+        if self.image:
+            if self.image.size > 1024 * 1024:
+                raise ValidationError("Image size should not exceed 1MB.")
+            validate_image_extension(self.image)
 
     def save(self, *args, **kwargs):
+        self.full_clean()  # Ensure clean() is called to validate image
         if self.pk is None:
             last_rank = Person.objects.aggregate(models.Max('rank'))['rank__max'] or 0
             self.rank = last_rank + 1

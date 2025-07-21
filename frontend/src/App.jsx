@@ -10,6 +10,7 @@ import Problems from './components/Created/ProblemsPage/Problems';
 import Compiler from './components/Created/Compiler/Compiler';
 import Profile from './components/Created/Profile/Profile';
 import { useParams } from 'react-router-dom';
+import EditProfile from './components/Created/Profile/EditProfile';
 
 function App() {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/problems" element={<Problems />} />
                 <Route path="/problems/:id" element={<Compiler />} />
                 <Route path="/profile/:username" element={<ProfileWrapper />} />
+                <Route path="/profile/:username/update" element={<EditProfile/>} />
               </Routes>
             </main>
             <Footer />

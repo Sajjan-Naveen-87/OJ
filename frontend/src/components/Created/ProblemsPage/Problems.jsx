@@ -142,16 +142,6 @@ export default function AnimatedProblemList() {
                             <p className="text-sm mb-1"><span className="font-medium">{problem.problem_level}</span></p>
                             <p className="text-sm mb-1">Points: {problem.points_awarded}</p>
                             <p className="text-sm mb-1">{problem.accuracy || 0}% Solved</p>
-                            {/* <div
-                                className="text-sm text-gray-200 mt-2"
-                                dangerouslySetInnerHTML={{ __html: decodeHtml(problem.problem_desc) }}
-                            /> */}
-                            {/* <button
-                                onClick={() => handleProblemSelect(problem.id)}
-                                className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white rounded"
-                            >
-                                Solve Now
-                            </button> */}
                         </div>
                     </AnimatedItem>
                 ))}
