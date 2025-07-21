@@ -12,6 +12,7 @@ import Profile from './components/Created/Profile/Profile';
 import { useParams } from 'react-router-dom';
 import EditProfile from './components/Created/Profile/EditProfile';
 import Leaderboard from './components/Created/LeaderBoard/LeaderBoard';
+import Home from './components/Created/Home';
 
 function App() {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -31,6 +32,7 @@ function App() {
             <main className="flex-grow pt-16 bg-gray-950 text-white">
               <Routes>
                 <Route path="/" element={<HomePageToRegisterOrLogin />} />
+                <Route path="/home" element={<Home/>} />
                 <Route path="/dashboard" element={<h1 className="text-center text-3xl mt-8">Dashboard Page</h1>} />
                 <Route path="/person" element={<Person />} />
                 <Route path="/problems" element={<Problems />} />

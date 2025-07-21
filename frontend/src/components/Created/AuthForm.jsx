@@ -34,7 +34,7 @@ function AuthForm() {
       localStorage.setItem('refreshToken', response.data.refresh);
       localStorage.setItem('username', username);
       setIsLoggedIn(true);
-      navigate('/dashboard');
+      navigate('/home');
       setErrors({});
     } catch (error) {
       setLoginError("Invalid credentials. Please try again.");
