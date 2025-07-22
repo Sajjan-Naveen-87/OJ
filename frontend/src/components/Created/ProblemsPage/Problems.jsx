@@ -146,7 +146,6 @@ export default function AnimatedProblemList() {
                     </AnimatedItem>
                 ))}
             </div>
-
             <div
                 className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-black to-transparent pointer-events-none"
                 style={{ opacity: topGradientOpacity }}

@@ -14,7 +14,8 @@ const Compiler = () => {
     const [language, setLanguage] = useState("c");
     const [stats, setStats] = useState({ runtime: "", memory: "" });
     const [htmlDesc, setHtmlDesc] = useState("");
-
+    const now = new Date();
+    console.log(now);  // Example: 2025-07-22T16:12:23.456Z
     useEffect(() => {
         // Fetch problem details
         axios.get(`http://localhost:8000/api/v1/problems/${id}`)
@@ -57,7 +58,9 @@ const Compiler = () => {
             setStats({
                 runtime: res.data.runtime,
                 memory: res.data.memory,
+                timestamp: now.toLocaleString(),
             });
+            res.data.timestamp = new Date().toLocaleString();
             setSubmissions((prev) => [res.data, ...prev]);
         }).catch((err) => {
             console.error("Submission error:", err);
@@ -72,11 +75,13 @@ const Compiler = () => {
             language,
         }).then((res) => {
             setOutput(res.data.output);
-            setVerdict(res.data.verdict);
+            setVerdict('Run Successful !');
             setStats({
                 runtime: res.data.runtime,
                 memory: res.data.memory,
+                timestamp: now,
             });
+            res.data.timestamp = new Date().toLocaleString();
             setSubmissions((prev) => [res.data, ...prev]);
         }).catch((err) => {
             console.error("Submission error:", err);
@@ -174,8 +179,9 @@ const Compiler = () => {
                 <h3 className="bg-gray-400 text-black border w-full border rounded p-2">Previous Submissions</h3>
                 <ul className="space-y-2">
                     {submissions.map((sub, idx) => (
-                        <li key={idx} className="border p-2 rounded bg-white shadow text-sm">
-                            <p className="font-semibold">abcd{id}</p>
+                        <li key={idx} className="border p-2 rounded bg-white text-black shadow text-sm">
+                            <p className="font-semibold">Submission ID: {submissions.length - idx}</p>
+                            <p className="text-xs text-gray-500">Time: {sub.timestamp || "Timestamp not available"}</p>
                             <div className="bg-gray-400 text-black border w-full border rounded p-2">
                                 Verdict: {sub.verdict}, Runtime: {sub.runtime} ms, Memory: {sub.memory} KB
                             </div>

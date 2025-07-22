@@ -1,8 +1,24 @@
-import React from 'react';
+import {useContext} from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from './AuthProvider';
+import FuzzyText from '../FuzzyText/FuzzyText';
 
 const Home = () => {
-    
+const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+  if (!isLoggedIn) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+                <FuzzyText
+                    baseIntensity={0.2}
+                    hoverIntensity={0.5}
+                    enableHover={true}
+                >
+                    Login First
+                </FuzzyText>
+            </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-900 via-purple-900 to-black text-white flex flex-col justify-center items-center p-6">
       <h1 className="text-5xl font-extrabold mb-4 text-center">

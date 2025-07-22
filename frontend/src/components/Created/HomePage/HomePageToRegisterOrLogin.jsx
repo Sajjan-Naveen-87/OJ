@@ -2,7 +2,6 @@ import React from 'react'
 import BubblesBackground from '../BubblesBackground'
 import LoginLogoutForm from '../LoginAndSigninForm'
 
-
 const HomePageToRegisterOrLogin = () => {
   { localStorage.clear()}
   return (
