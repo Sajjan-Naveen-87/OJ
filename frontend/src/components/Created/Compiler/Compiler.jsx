@@ -14,8 +14,9 @@ const Compiler = () => {
     const [language, setLanguage] = useState("c");
     const [stats, setStats] = useState({ runtime: "", memory: "" });
     const [htmlDesc, setHtmlDesc] = useState("");
+    const [aiResponse, setAiResponse] = useState("");
     const now = new Date();
-    console.log(now);  // Example: 2025-07-22T16:12:23.456Z
+    // console.log(now);  // Example: 2025-07-22T16:12:23.456Z
     useEffect(() => {
         // Fetch problem details
         axios.get(`http://localhost:8000/api/v1/problems/${id}`)
@@ -64,6 +65,9 @@ const Compiler = () => {
             setSubmissions((prev) => [res.data, ...prev]);
         }).catch((err) => {
             console.error("Submission error:", err);
+            if (err.response) {
+                console.error("Server error response:", err.response.data);
+            }
         });
     };
 
@@ -86,6 +90,20 @@ const Compiler = () => {
         }).catch((err) => {
             console.error("Submission error:", err);
         });
+    };
+
+    const handleAskAI = async () => {
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/api/v1/ai/analyze/", {
+                code,
+                language,
+                problem_title: problem?.title || "Untitled Problem",
+            });
+            setAiResponse(response.data.feedback || "No suggestion received.");
+        } catch (err) {
+            console.error("AI analysis error:", err);
+            setAiResponse("Failed to get AI response.");
+        }
     };
 
     return (
@@ -139,17 +157,6 @@ const Compiler = () => {
                         }}
                     />
                     <div className="mt-4 flex gap-4 items-center">
-
-                    </div>
-                    {/* Custom Input */}
-                    <div className="mt-6">
-                        <label className="block font-semibold mb-2">Input:</label>
-                        <textarea
-                            rows="2"
-                            className="bg-gray-400 text-black border w-full border rounded p-2"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                        ></textarea>
                         <button
                             onClick={handleRun}
                             className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
@@ -158,7 +165,6 @@ const Compiler = () => {
                                 Run
                             </span>
                         </button>
-                        &nbsp;&nbsp;&nbsp;
                         <button
                             onClick={handleSubmit}
                             className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
@@ -167,9 +173,29 @@ const Compiler = () => {
                                 Submit
                             </span>
                         </button>
+                        <button
+                            onClick={handleAskAI}
+                            className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-500 to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+                        >
+                            <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
+                                Ask AI
+                            </span>
+                        </button>
+                    </div>
+                    {/* Custom Input */}
+                    <div className="mt-6">
+                        <label className="block font-semibold mb-2">Input:</label>
+                        <textarea
+                            rows="2"
+                            className="bg-gray-400 text-black w-full border rounded p-2"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                        ></textarea>
 
                         <h4 className="font-semibold mt-2">Output:</h4>
                         <p className="bg-gray-400 p-2 text-black border rounded">{output}</p>
+                        <h4 className="font-semibold mt-4">AI Suggestions:</h4>
+                        <p className="bg-blue-100 text-black border rounded p-2 whitespace-pre-wrap">{aiResponse}</p>
                     </div>
                 </div>
             </div>
