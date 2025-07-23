@@ -12,5 +12,4 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('leaderboard/', include('leaderboard.urls')),
     path('ai/', include('ai.urls')),
-
 ]

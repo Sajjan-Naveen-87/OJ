@@ -7,8 +7,7 @@ import defaultProfileImage from '../../assets/ProfileImage/general-profile-image
 
 const Navbar = (props) => {
   const items = [
-    { label: "BubbleCode", href: "#" },
-    { label: "Home", href: "/home" },
+    { label: "BubbleCode", href: "/home" },
     { label: "Practice", href: "/problems" },
     { label: "Leaderboard", href: "/leaderboard" },
     { label: "Create Group", href: "/createGroup" },

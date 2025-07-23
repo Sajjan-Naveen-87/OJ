@@ -13,7 +13,8 @@ import { useParams } from 'react-router-dom';
 import EditProfile from './components/Created/Profile/EditProfile';
 import Leaderboard from './components/Created/LeaderBoard/LeaderBoard';
 import Home from './components/Created/Home';
-import AiChatbot from './components/Created/AiChatbot/AiChatbot';
+import FuzzyText from './components/FuzzyText/FuzzyText';
+import ComingSoon from './components/FuzzyText/ComingSoon';
 function App() {
   const [activeIdx, setActiveIdx] = useState(0);
   const ProfileWrapper = () => {
@@ -33,14 +34,14 @@ function App() {
               <Routes>
                 <Route path="/" element={<HomePageToRegisterOrLogin />} />
                 <Route path="/home" element={<Home/>} />
-                <Route path="/dashboard" element={<h1 className="text-center text-3xl mt-8">Dashboard Page</h1>} />
                 <Route path="/person" element={<Person />} />
                 <Route path="/problems" element={<Problems />} />
                 <Route path="/problems/:id" element={<Compiler />} />
                 <Route path="/profile/:username" element={<ProfileWrapper />} />
                 <Route path="/profile/:username/update" element={<EditProfile/>} />
                 <Route path="/leaderboard" element={<Leaderboard/>} />
-                <Route path="/ai" element={<AiChatbot/>} />
+                <Route path="/createGroup" element={<ComingSoon/>} />
+                <Route path="/joinGroup" element={<ComingSoon/>} />
               </Routes>
             </main>
             <Footer />

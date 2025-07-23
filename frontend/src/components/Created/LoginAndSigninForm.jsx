@@ -5,7 +5,7 @@ import AuthForm from './AuthForm'
 const LoginLogoutForm = () => {
   return (
     <>
-        <div className="relative z-10 flex items-center justify-center h-full px-4">
+        <div className="relative z-10 flex items-center justify-center h-full px-4 py-15">
           <AnimatedContent
             distance={0}
             direction="vertical"
