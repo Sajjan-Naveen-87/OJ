@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import code_review
+from .views import process_prompt
 
 urlpatterns = [
-    path("analyze/", code_review, name='code_analyze'),
+    path("analyze/", process_prompt, name='code_analyze'),
 ]

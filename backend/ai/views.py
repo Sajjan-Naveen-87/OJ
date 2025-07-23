@@ -3,41 +3,35 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import os
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+import time
+from google import genai
+API_KEY = 'AIzaSyBwOTCZhVV9Oy1IWSv7KpzGH-upO599g18'
 @csrf_exempt
-def code_review(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            code = data.get('code', '')
-            language = data.get('language', '')
-            problem_title = data.get('problem_title', '')
 
-            prompt = f"""Review this {language} code for the problem titled '{problem_title}'.Suggest improvements, highlight any bugs, and recommend optimizations:\n\n{code}"""
-            print(os.getenv('OPENROUTER_API_KEY'))
-            headers = {
-                "Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}",
-                "Content-Type": "application/json",
-                "HTTP-Referer": "http://localhost:5173",  # Update this for production
-                "X-Title": "BubbleCodeAI",
-            }
+# @api_view(['POST'])
+# def process_prompt(request):
+#     prompt = request.data.get('prompt', '')
+    
+#     # Simulate AI processing (replace with actual AI model later)
+#     time.sleep(1)  # Simulate processing time
+#     response = f"I received your prompt: '{prompt}'. This is a simulated response."
+    
+#     return Response({'response': response}, status=status.HTTP_200_OK)
 
-            body = {
-                "model": "google/gemini-flash-2",
-                "messages": [{"role": "user", "content": prompt}],
-            }
+@api_view(['POST'])
+def process_prompt(request):
+    prompt = request.data.get('prompt', '')
+    client = genai.Client(api_key=API_KEY)
 
-            response = requests.post(
-                "https://openrouter.ai/api/v1/chat/completions",
-                headers=headers,
-                data=json.dumps(body)
-            )
+    try:
 
-            result = response.json()
-            reply = result.get("choices", [{}])[0].get("message", {}).get("content", "No feedback received.")
-
-            return JsonResponse({"feedback": reply})
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
-
-    return JsonResponse({"error": "Invalid request method."}, status=405)
+        response = client.models.generate_content(
+            model="gemini-2.0-flash", contents=prompt
+        )
+        ai_response = response.text
+        return Response({'response': ai_response}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

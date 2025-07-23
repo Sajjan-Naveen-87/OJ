@@ -13,7 +13,7 @@ import { useParams } from 'react-router-dom';
 import EditProfile from './components/Created/Profile/EditProfile';
 import Leaderboard from './components/Created/LeaderBoard/LeaderBoard';
 import Home from './components/Created/Home';
-
+import AiChatbot from './components/Created/AiChatbot/AiChatbot';
 function App() {
   const [activeIdx, setActiveIdx] = useState(0);
   const ProfileWrapper = () => {
@@ -40,6 +40,7 @@ function App() {
                 <Route path="/profile/:username" element={<ProfileWrapper />} />
                 <Route path="/profile/:username/update" element={<EditProfile/>} />
                 <Route path="/leaderboard" element={<Leaderboard/>} />
+                <Route path="/ai" element={<AiChatbot/>} />
               </Routes>
             </main>
             <Footer />
