@@ -217,6 +217,17 @@ const Compiler = () => {
                             onChange={(e) => setInput(e.target.value)}
                         ></textarea>
 
+                        {/* Output Section */}
+                        <div className="mt-4">
+                            <label className="block font-semibold mb-2">Output:</label>
+                            <textarea
+                                rows="2"
+                                readOnly
+                                className="bg-gray-300 text-black w-full border rounded p-2"
+                                value={output}
+                            ></textarea>
+                        </div>
+
                         {aiFeedback && (
                             <div className="mt-4 bg-yellow-100 text-black border border-yellow-400 rounded p-4">
                                 <h4 className="font-semibold mb-1">AI Suggestions:</h4>
