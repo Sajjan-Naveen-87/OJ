@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import axios from "axios";
+import { FaRobot } from "react-icons/fa";
 
 const Compiler = () => {
     const { id } = useParams();
@@ -17,6 +18,8 @@ const Compiler = () => {
     const [aiResponse, setAiResponse] = useState("");
     const now = new Date();
     // console.log(now);  // Example: 2025-07-22T16:12:23.456Z
+    const [aiLoading, setAiLoading] = useState(false);
+    const [aiFeedback, setAiFeedback] = useState("");
     useEffect(() => {
         // Fetch problem details
         axios.get(`http://localhost:8000/api/v1/problems/${id}`)
@@ -92,19 +95,26 @@ const Compiler = () => {
         });
     };
 
-    const handleAskAI = async () => {
+    const handleAIAssist = async () => {
+        setAiLoading(true);
+        setAiFeedback("");
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/v1/ai/analyze/", {
+            const res = await axios.post("http://127.0.0.1:8000/api/v1/ai/analyze/", {
                 code,
                 language,
-                problem_title: problem?.title || "Untitled Problem",
+                problem_title: problem?.title || ""
+                // problem_desc : problem?.desc  || ""
             });
-            setAiResponse(response.data.feedback || "No suggestion received.");
-        } catch (err) {
-            console.error("AI analysis error:", err);
-            setAiResponse("Failed to get AI response.");
+            setAiFeedback(res.data.feedback || "No suggestions.");
+            console.log(res.data.feedback)
+        } catch (error) {
+            console.error("AI review error:", error);
+            setAiFeedback("Failed to get AI suggestions.");
+        } finally {
+            setAiLoading(false);
         }
     };
+
 
     return (
         <div className="p-4">
@@ -174,13 +184,16 @@ const Compiler = () => {
                             </span>
                         </button>
                         <button
-                            onClick={handleAskAI}
-                            className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-500 to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+                            onClick={handleAIAssist}
+                            disabled={aiLoading}
+                            className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-white rounded-lg group bg-gradient-to-br from-green-500 to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
                         >
-                            <span className="px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-transparent group-hover:dark:bg-transparent">
-                                Ask AI
+                            <span className="flex items-center gap-2 px-5 py-2.5 transition-all ease-in duration-75 bg-gray-900 rounded-md group-hover:bg-transparent">
+                                <FaRobot />
+                                {aiLoading ? "Analyzing..." : "Ask AI"}
                             </span>
                         </button>
+
                     </div>
                     {/* Custom Input */}
                     <div className="mt-6">
@@ -192,10 +205,12 @@ const Compiler = () => {
                             onChange={(e) => setInput(e.target.value)}
                         ></textarea>
 
-                        <h4 className="font-semibold mt-2">Output:</h4>
-                        <p className="bg-gray-400 p-2 text-black border rounded">{output}</p>
-                        <h4 className="font-semibold mt-4">AI Suggestions:</h4>
-                        <p className="bg-blue-100 text-black border rounded p-2 whitespace-pre-wrap">{aiResponse}</p>
+                        {aiFeedback && (
+                            <div className="mt-4 bg-yellow-100 text-black border border-yellow-400 rounded p-4">
+                                <h4 className="font-semibold mb-1">AI Suggestions:</h4>
+                                <p className="whitespace-pre-wrap">{aiFeedback}</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -14,12 +14,12 @@ def validate_image_extension(image):
         raise ValidationError(f'Unsupported file extension: {ext}. Allowed: jpg, jpeg, png, gif.')
 
 class Person(models.Model):
-    GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')]
+    GENDER_CHOICES = [('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other'), ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='person_profile')
     
-    first_name = models.CharField(max_length=50, validators=[alpha_validator])
-    last_name = models.CharField(max_length=50, validators=[alpha_validator])
+    first_name = models.CharField(max_length=50, validators=[alpha_validator], blank=True, default="")
+    last_name = models.CharField(max_length=50, validators=[alpha_validator], blank=True, default="")
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     date_of_joining = models.DateTimeField(auto_now_add=True)
 
@@ -36,7 +36,7 @@ class Person(models.Model):
     problems_solved = models.IntegerField(default=0)
 
     about = models.TextField(blank=True)
-    profession = models.CharField(max_length=100)
+    profession = models.CharField(max_length=100, blank=True, default="")
     public_account = models.BooleanField(default=False)
     groups_joined = models.CharField(max_length=255, blank=True)
 
@@ -46,13 +46,14 @@ class Person(models.Model):
                 raise ValidationError("Image size should not exceed 1MB.")
             validate_image_extension(self.image)
 
-    def save(self, *args, **kwargs):
-        self.full_clean()  # Ensure clean() is called to validate image
-        if self.pk is None:
+    def save(self, *args, skip_update_ranks=False, **kwargs):
+        self.full_clean()
+        if self.pk is None and self.rank is None:
             last_rank = Person.objects.aggregate(models.Max('rank'))['rank__max'] or 0
             self.rank = last_rank + 1
         super().save(*args, **kwargs)
-        self.update_ranks()
+        if not skip_update_ranks:
+            self.update_ranks()
 
         # Sync with LeaderboardEntry
         LeaderboardEntry.objects.update_or_create(
@@ -66,7 +67,7 @@ class Person(models.Model):
         for index, person in enumerate(people, start=1):
             if person.rank != index:
                 person.rank = index
-                person.save(update_fields=['rank'])
+                person.save(update_fields=['rank'], skip_update_ranks=True)
                 LeaderboardEntry.objects.update_or_create(
                     user=person.user,
                     defaults={'score': person.score}

@@ -13,8 +13,7 @@ def code_review(request):
             language = data.get('language', '')
             problem_title = data.get('problem_title', '')
 
-            prompt = f"""Review this {language} code for the problem titled '{problem_title}'. 
-Suggest improvements, highlight any bugs, and recommend optimizations:\n\n{code}"""
+            prompt = f"""Review this {language} code for the problem titled '{problem_title}'.Suggest improvements, highlight any bugs, and recommend optimizations:\n\n{code}"""
             print(os.getenv('OPENROUTER_API_KEY'))
             headers = {
                 "Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}",

@@ -14,6 +14,20 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
+    def perform_create(self, serializer):
+        user = serializer.save()
+        # Create Person instance with default/null fields
+        Person.objects.create(
+            user=user,
+            first_name="",
+            last_name="",
+            gender="Other",
+            profession="",
+            about="",
+            public_account=False,
+            groups_joined="",
+        )
+
 # Get profile by username
 @api_view(['GET'])
 def get_profile_by_username(request, username):

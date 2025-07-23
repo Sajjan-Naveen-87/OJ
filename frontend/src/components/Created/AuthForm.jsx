@@ -14,6 +14,7 @@ function AuthForm() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
 
   const handleToggle = () => {
     setIsLogin(!isLogin);
@@ -21,7 +22,6 @@ function AuthForm() {
     setLoginError('');
     setSuccess(false);
   };
-  const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext)
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -49,7 +49,7 @@ function AuthForm() {
     const userdata = { username, email, password };
 
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/v1/register/', userdata);
+      await axios.post('http://127.0.0.1:8000/api/v1/register/', userdata);
       setSuccess(true);
       setErrors({});
     } catch (error) {
