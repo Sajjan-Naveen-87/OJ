@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useContext} from "react";
 import { useParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import axios from "axios";
 import { FaRobot } from "react-icons/fa";
-
+import AuthProvider, { AuthContext } from '../AuthProvider';
+import FuzzyText from "../../FuzzyText/FuzzyText";
 const Compiler = () => {
     const { id } = useParams();
     const [code, setCode] = useState("// Write your code here");
@@ -20,6 +21,17 @@ const Compiler = () => {
     // console.log(now);  // Example: 2025-07-22T16:12:23.456Z
     const [aiLoading, setAiLoading] = useState(false);
     const [aiFeedback, setAiFeedback] = useState("");
+    const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+    if (!isLoggedIn) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <FuzzyText baseIntensity={0.2} hoverIntensity={0.5} enableHover={true}>
+                    Login to Practice
+                </FuzzyText>
+            </div>
+        );
+    }
+    
     useEffect(() => {
         // Fetch problem details
         axios.get(`http://localhost:8000/api/v1/problems/${id}`)
