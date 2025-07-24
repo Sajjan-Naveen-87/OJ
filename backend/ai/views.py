@@ -1,10 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-import time
 from google import genai
-import os
-from pathlib import Path
 from decouple import config
 @api_view(['POST'])
 def process_prompt(request):

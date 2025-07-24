@@ -3,9 +3,8 @@ import SplashCursor from './components/SplashCursor/SplashCursor';
 import Footer from './components/Created/Footer';
 import Navbar from './components/Created/Navbar';
 import HomePageToRegisterOrLogin from './components/Created/HomePage/HomePageToRegisterOrLogin';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthProvider from './components/Created/AuthProvider';
-import Person from './components/Created/PersonalPage/Person';
 import Problems from './components/Created/ProblemsPage/Problems';
 import Compiler from './components/Created/Compiler/Compiler';
 import Profile from './components/Created/Profile/Profile';
@@ -33,15 +32,15 @@ function App() {
             <main className="flex-grow pt-16 bg-gray-950 text-white">
               <Routes>
                 <Route path="/" element={<HomePageToRegisterOrLogin />} />
-                <Route path="/home" element={<Home/>} />
-                <Route path="/person" element={<Person />} />
+                <Route path="/home" element={<Home />} />
                 <Route path="/problems" element={<Problems />} />
                 <Route path="/problems/:id" element={<Compiler />} />
                 <Route path="/profile/:username" element={<ProfileWrapper />} />
-                <Route path="/profile/:username/update" element={<EditProfile/>} />
-                <Route path="/leaderboard" element={<Leaderboard/>} />
-                <Route path="/createGroup" element={<ComingSoon/>} />
-                <Route path="/joinGroup" element={<ComingSoon/>} />
+                <Route path="/profile/:username/update" element={<EditProfile />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/createGroup" element={<ComingSoon />} />
+                <Route path="/joinGroup" element={<ComingSoon />} />
+                <Route path="*" element={<Navigate to="/home" replace />} /> {/*Handling Invalid pages */}
               </Routes>
             </main>
             <Footer />

@@ -221,7 +221,7 @@ const Compiler = () => {
                     <>
                         <div className="flex justify-center pt-2">
                             <h4 className="text-2xl font-semibold text-yellow-600 mb-2 flex items-center gap-2 bg-light text-center">
-                                <FaRobot className="text-green-500" /> AI Feedback
+                                <FaRobot className="text-green-500" /> BubblAI Feedback
                             </h4>
                         </div>
                         <div className="mt-6 p-4 bg-dark text-light rounded shadow border border-gray-100 max-h-64 overflow-auto">
@@ -234,8 +234,12 @@ const Compiler = () => {
                     </>
                 )}
             </div>
-            <div className="mt-8">
-                <h3 className="bg-gray-400 text-black border w-full border rounded p-2">Previous Submissions</h3>
+            <div className="flex justify-center pt-2">
+                <h4 className="text-2xl font-semibold text-yellow-600 mb-2 flex items-center gap-2 bg-light text-center">
+                    <FaRobot className="text-green-500" /> Previous Submissions
+                </h4>
+            </div>
+            <div className="mt-1 max-h-96 overflow-y-auto border rounded">
                 <ul className="space-y-2">
                     {submissions.map((sub, idx) => (
                         <li key={idx} className="border p-2 rounded bg-white text-black shadow text-sm">

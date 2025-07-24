@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import Galaxy from "../../Galaxy/Galaxy";
 const AnimatedItem = ({ children, delay = 0, index, onMouseEnter, onClick }) => {
     const ref = useRef(null);
     const inView = useInView(ref, { amount: 0.5, triggerOnce: false });
@@ -117,43 +117,55 @@ export default function AnimatedProblemList() {
     }, [selectedIndex, keyboardNav]);
 
     return (
-        <div className="relative w-full max-w-6xl mx-auto">
-            <div
-                ref={listRef}
-                onScroll={handleScroll}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[600px] overflow-y-auto px-4 py-6
-                [&::-webkit-scrollbar]:w-2
-                [&::-webkit-scrollbar-thumb]:bg-neutral-800
-                [&::-webkit-scrollbar-track]:bg-black"
-            >
-                {problems.map((problem, index) => (
-                    <AnimatedItem
-                        key={problem.id}
-                        index={index}
-                        delay={0.05 * index}
-                        onMouseEnter={() => setSelectedIndex(index)}
-                        onClick={() => handleProblemSelect(problem.id)}
-                    >
-                        <div
-                            className={`p-4 rounded-xl text-white transition-all duration-200 border-l-8 ${getColorByLevel(problem.problem_level)} ${selectedIndex === index ? "ring-2 ring-white" : ""
-                                }`}
-                        >
-                            <h2 className="text-xl font-bold mb-2">#{problem.id} {problem.title}</h2>
-                            <p className="text-sm mb-1"><span className="font-medium">{problem.problem_level}</span></p>
-                            <p className="text-sm mb-1">Points: {problem.points_awarded}</p>
-                            <p className="text-sm mb-1">{problem.accuracy || 0}% Solved</p>
-                        </div>
-                    </AnimatedItem>
-                ))}
+        <div className="relative w-full h-screen overflow-hidden">
+            <div className="absolute top-0 left-0 z-0 w-full h-full">
+                <Galaxy
+                    mouseRepulsion={true}
+                    mouseInteraction={false}
+                    density={1.5}
+                    glowIntensity={0.5}
+                    saturation={0.8}
+                    hueShift={240}
+                />
             </div>
-            <div
-                className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-black to-transparent pointer-events-none"
-                style={{ opacity: topGradientOpacity }}
-            />
-            <div
-                className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black to-transparent pointer-events-none"
-                style={{ opacity: bottomGradientOpacity }}
-            />
+            <div className="relative z-10 w-full max-w-6xl mx-auto pt-10">
+                <div
+                    ref={listRef}
+                    onScroll={handleScroll}
+                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[600px] overflow-y-auto px-4 py-6
+                  [&::-webkit-scrollbar]:w-2
+                  [&::-webkit-scrollbar-thumb]:bg-neutral-800
+                  [&::-webkit-scrollbar-track]:bg-black"
+                >
+                    {problems.map((problem, index) => (
+                        <AnimatedItem
+                            key={problem.id}
+                            index={index}
+                            delay={0.05 * index}
+                            onMouseEnter={() => setSelectedIndex(index)}
+                            onClick={() => handleProblemSelect(problem.id)}
+                        >
+                            <div
+                                className={`p-4 rounded-xl text-white transition-all duration-200 border-l-8 ${getColorByLevel(problem.problem_level)} ${selectedIndex === index ? "ring-2 ring-white" : ""
+                                    }`}
+                            >
+                                <h2 className="text-xl font-bold mb-2">#{problem.id} {problem.title}</h2>
+                                <p className="text-sm mb-1"><span className="font-medium">{problem.problem_level}</span></p>
+                                <p className="text-sm mb-1">Points: {problem.points_awarded}</p>
+                                <p className="text-sm mb-1">{problem.accuracy || 0}% Solved</p>
+                            </div>
+                        </AnimatedItem>
+                    ))}
+                </div>
+                <div
+                    className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-b from-black to-transparent pointer-events-none"
+                    style={{ opacity: topGradientOpacity }}
+                />
+                <div
+                    className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black to-transparent pointer-events-none"
+                    style={{ opacity: bottomGradientOpacity }}
+                />
+            </div>
         </div>
     );
 }
