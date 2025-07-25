@@ -149,7 +149,7 @@ export default function AnimatedProblemList() {
                                 className={`p-4 rounded-xl text-white transition-all duration-200 border-l-8 ${getColorByLevel(problem.problem_level)} ${selectedIndex === index ? "ring-2 ring-white" : ""
                                     }`}
                             >
-                                <h2 className="text-xl font-bold mb-2">#{problem.id} {problem.title}</h2>
+                                <h2 className="text-xl font-bold mb-2">#{index+1} {problem.title}</h2>
                                 <p className="text-sm mb-1"><span className="font-medium">{problem.problem_level}</span></p>
                                 <p className="text-sm mb-1">Points: {problem.points_awarded}</p>
                                 <p className="text-sm mb-1">{problem.accuracy || 0}% Solved</p>
